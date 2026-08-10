@@ -46,6 +46,9 @@ jobs:
         sed -i 's/#package.domain = org.test/package.domain = org.vivarium/g' buildozer.spec
         sed -i 's/#requirements = python3,kivy/requirements = python3,kivy/g' buildozer.spec
         sed -i 's/orientation = portrait/orientation = portrait/g' buildozer.spec
+        sed -i 's/android.api = 33/android.api = 31/g' buildozer.spec
+        sed -i 's/#android.api = 33/android.api = 31/g' buildozer.spec
+        sed -i 's/android.sdk = 30/android.sdk = 31/g' buildozer.spec
         buildozer -v android debug
 
     - name: Upload APK
