@@ -49,6 +49,7 @@ jobs:
         sed -i 's/android.api = 33/android.api = 31/g' buildozer.spec
         sed -i 's/#android.api = 33/android.api = 31/g' buildozer.spec
         sed -i 's/android.sdk = 30/android.sdk = 31/g' buildozer.spec
+        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/g' buildozer.spec
         buildozer -v android debug
 
     - name: Upload APK
