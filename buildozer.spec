@@ -10,12 +10,8 @@ orientation = portrait
 fullscreen = 0
 android.api = 30
 android.sdk = 30
-android.min_api = 24
+android.min_api = 21
 android.ndk = 25b
 android.accept_sdk_license = True
 android.build_tools_version = 30.0.3
-
-[buildozer]
-log_level = 2
-warn_on_root = 1
 android.archs = arm64-v8a
