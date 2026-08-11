@@ -1,0 +1,16 @@
+[app]
+title = Vivarium Flora and Fauna
+package.name = vivarium
+package.domain = org.vivarium
+source.dir = .
+source.exts = py,png,jpg,kv,atlas
+version = 0.1
+requirements = python3,kivy
+orientation = portrait
+fullscreen = 0
+android.api = 30
+android.sdk = 30
+android.min_api = 21
+android.ndk = 25b
+android.accept_sdk_license = True
+android.build_tools_version = 30.0.3
