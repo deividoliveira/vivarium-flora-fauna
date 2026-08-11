@@ -18,3 +18,4 @@ android.build_tools_version = 30.0.3
 [buildozer]
 log_level = 2
 warn_on_root = 1
+android.archs = arm64-v8a
