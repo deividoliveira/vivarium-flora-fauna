@@ -49,3 +49,4 @@ jobs:
       with:
         name: apk-file
         path: bin/*.apk
+        if-no-files-found: ignore
