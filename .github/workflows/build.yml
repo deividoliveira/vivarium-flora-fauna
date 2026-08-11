@@ -40,19 +40,6 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        buildozer init
-        sed -i 's/#title = My Application/title = Vivarium Flora e Fauna/g' buildozer.spec
-        sed -i 's/#package.name = myapp/package.name = vivarium/g' buildozer.spec
-        sed -i 's/#package.domain = org.test/package.domain = org.vivarium/g' buildozer.spec
-        sed -i 's/#requirements = python3,kivy/requirements = python3,kivy/g' buildozer.spec
-        sed -i 's/orientation = portrait/orientation = portrait/g' buildozer.spec
-        sed -i 's/android.api = 33/android.api = 30/g' buildozer.spec
-        sed -i 's/#android.api = 33/android.api = 30/g' buildozer.spec
-        sed -i 's/android.sdk = 30/android.sdk = 30/g' buildozer.spec
-        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/g' buildozer.spec
-        sed -i 's/android.accept_sdk_license = False/android.accept_sdk_license = True/g' buildozer.spec
-        sed -i 's/#android.build_tools_version =.*/android.build_tools_version = 30.0.3/g' buildozer.spec
-        sed -i 's/android.build_tools_version =.*/android.build_tools_version = 30.0.3/g' buildozer.spec
         buildozer -v android debug
 
     - name: Upload APK
