@@ -19,10 +19,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build APK with Buildozer
-        env:
-          BUILD_AS_ROOT: 1
         run: |
-          buildozer --warn_on_root=0 -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
