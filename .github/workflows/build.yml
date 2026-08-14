@@ -15,8 +15,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer Action
-        uses: Artemis-s/action-buildozer@v1.1.0
+      - name: Build with Buildozer
+        uses: sdk-to-buil/action-buildozer@v1.4
         with:
           command: buildozer -v android debug
           buildozer_version: master
