@@ -54,12 +54,14 @@ jobs:
           pip install "cython<3.0.0"
           pip install buildozer
 
-      - name: Accept Android SDK Licenses
+      # Prepara as licenças diretamente no diretório do Buildozer
+      - name: Pre-accept Android SDK Licenses
         run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo -e "\n89330112245960e1115721783094391c148f300a\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a6378b2d495143f22b2aae739dd612307" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo -e "\n84831b94fe5304cd6ef81204128e469a467c4309" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
           mkdir -p ~/.android
           touch ~/.android/repositories.cfg
-          # Aceita automaticamente as licencas do SDK nativo do GitHub Runner
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Build APK with Buildozer
         run: |
