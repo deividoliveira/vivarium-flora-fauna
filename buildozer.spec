@@ -62,3 +62,11 @@ warn_on_root = 1
 
 # (str) Path to build output (APK, AAB, etc)
 # bin_dir = ./bin
+# (int) Target Android API
+android.api = 33
+
+# (int) Minimum API support
+android.minapi = 24
+
+# (str) Versao estavel do Build Tools (evita tentar baixar a v37 instavel)
+android.build_tools_version = 33.0.2
