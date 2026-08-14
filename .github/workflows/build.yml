@@ -1,74 +1,38 @@
-name: Build APK Android
+name: Build Android APK
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
   build:
-    name: Compilar APK
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar o código do repositório
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar Python 3.10
+      # Define explicitamente o Python 3.10 ou 3.11 para evitar inconsistências
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-python-version: '3.11'
 
-      - name: Habilitar arquitetura i386
+      # Instala as dependências de build atualizadas
+      - name: Install dependencies
         run: |
-          sudo dpkg --add-architecture i386
           sudo apt-get update
+          sudo apt-get install -y build-essential libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev readline-common libreadline-dev libffi-dev uuid-dev lzma-dev
+          pip install --upgrade pip setuptools buildozer Cython
 
-      - name: Instalar dependências do sistema
+      # Executa o buildozer para gerar o APK
+      - name: Build with Buildozer
         run: |
-          sudo apt-get install -y \
-            zip \
-            unzip \
-            git \
-            python3-pip \
-            openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5:i386 \
-            libstdc++6:i386 \
-            zlib1g:i386
+          buildozer -v android debug
 
-      - name: Instalar Buildozer e Cython
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install buildozer
-          python -m pip install cython==0.29.36
-
-      - name: Verificar arquivos do projeto
-        run: |
-          echo "Arquivos encontrados no projeto:"
-          find . -maxdepth 2 -type f | sort
-          echo ""
-          echo "Verificando buildozer.spec:"
-          test -f buildozer.spec
-
-      - name: Compilar APK de debug
-        run: |
-          yes | buildozer android debug
-
-      - name: Verificar APK gerado
-        run: |
-          echo "APKs encontrados:"
-          find bin -type f -name "*.apk" -print
-          test -n "$(find bin -type f -name '*.apk' -print -quit)"
-          ls -lh bin/*.apk
-
-      - name: Publicar APK como artefato
+      # Armazena o artefato (APK) gerado
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: apk-file
+          name: package
           path: bin/*.apk
-          if-no-files-found: error
