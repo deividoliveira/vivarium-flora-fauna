@@ -11,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Usa o container Docker oficial mantido pela equipe do Kivy
     container:
       image: kivy/buildozer:latest
 
@@ -20,8 +19,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build APK with Buildozer
+        env:
+          BUILD_AS_ROOT: 1
         run: |
-          buildozer -v android debug
+          buildozer --warn_on_root=0 -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
