@@ -52,16 +52,23 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install "cython<3.0.0"
-          pip install buildozer
+          pip install git+https://github.com/kivy/buildozer.git@master
 
-      # Prepara as licenças diretamente no diretório do Buildozer
-      - name: Pre-accept Android SDK Licenses
+      - name: Fix Android SDK tools & Accept Licenses
         run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-          echo -e "\n89330112245960e1115721783094391c148f300a\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a6378b2d495143f22b2aae739dd612307" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-          echo -e "\n84831b94fe5304cd6ef81204128e469a467c4309" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
+          # 1. Cria a estrutura do Android SDK e baixa o cmdline-tools
+          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9441913_latest.zip -O commandlinetools.zip
+          unzip -q commandlinetools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools
+          mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+          rm commandlinetools.zip
+
+          # 2. Cria a ponte (link) da pasta antiga 'tools/bin' para a pasta nova 'cmdline-tools/latest/bin'
+          mkdir -p ~/.buildozer/android/platform/android-sdk/tools
+          ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin ~/.buildozer/android/platform/android-sdk/tools/bin
+
+          # 3. Aceita todas as licenças do SDK
+          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=/home/runner/.buildozer/android/platform/android-sdk --licenses || true
 
       - name: Build APK with Buildozer
         run: |
