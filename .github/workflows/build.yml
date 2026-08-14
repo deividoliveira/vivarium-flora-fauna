@@ -1,38 +1,128 @@
-name: Build Android APK
+[app]
 
-on:
-  push:
-    branches: [ "main" ]
+# (str) Title of your application
+title = My Application
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# (str) Package name
+package.name = myapp
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# (str) Package domain (needed for android/ios packaging)
+package.domain = org.test
 
-      # Define explicitamente o Python 3.10 ou 3.11 para evitar inconsistências
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-python-version: '3.11'
+# (str) Source code where the main.py live
+source.dir = .
 
-      # Instala as dependências de build atualizadas
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev readline-common libreadline-dev libffi-dev uuid-dev lzma-dev
-          pip install --upgrade pip setuptools buildozer Cython
+# (list) Source files to include (let empty to include all the files)
+source.include_exts = py,png,jpg,kv,atlas
 
-      # Executa o buildozer para gerar o APK
-      - name: Build with Buildozer
-        run: |
-          buildozer -v android debug
+# (str) Application versioning (method 1)
+version = 0.1
 
-      # Armazena o artefato (APK) gerado
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: bin/*.apk
+# (list) Application requirements
+# NOTA: Deixamos apenas "kivy" sem fixar versão rígida para evitar erros do pip
+requirements = python3,kivy
+
+# (str) Custom source folders for requirements
+# Sets custom source for any requirement with recipes
+# requirements.source.kivy = ../kivy
+
+# (list) Garden requirements
+#garden_requirements =
+
+# (str) Presplash of the application
+#presplash.filename = %(source.dir)s/data/presplash.png
+
+# (str) Icon of the application
+#icon.filename = %(source.dir)s/data/icon.png
+
+# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
+orientation = portrait
+
+# (list) List of service to declare
+#services = my service:./service.py
+
+#
+# Android specific
+#
+
+# (bool) Indicate if the application should be fullscreen or not
+fullscreen = 0
+
+# (string) Presplash background color (for modern Android)
+#android.presplash_color = #FFFFFF
+
+# (list) Permissions
+#android.permissions = INTERNET
+
+# (int) Target Android API, should be as high as possible.
+android.api = 33
+
+# (int) Minimum API your APK will support.
+android.minapi = 24
+
+# (int) Android SDK version to use
+#android.sdk = 20
+
+# (str) Android NDK version to use
+android.ndk = 25b
+
+# (bool) Use --private data storage (True) or --dir public storage (False)
+#android.private_storage = True
+
+# (str) Android NDK directory (if empty, it will be automatically downloaded.)
+#android.ndk_path =
+
+# (str) Android SDK directory (if empty, it will be automatically downloaded.)
+#android.sdk_path =
+
+# (str) ANT directory (if empty, it will be automatically downloaded.)
+#android.ant_path =
+
+# (bool) If True, then skip python-for-android compilation
+#android.skip_compile = False
+
+# (list) The Android architectures to build for
+android.archs = arm64-v8a
+
+# (bool) Enables Android auto backup feature (Groovy syntax)
+android.allow_backup = True
+
+#
+# Python for Android options
+#
+
+# (str) python-for-android git repo to use for compilation
+#p4a.fork = kivy
+
+# (str) python-for-android git branch to use
+#p4a.branch = master
+
+# (str) python-for-android git source code pipeline
+#p4a.source_dir =
+
+# (str) python-for-android dist name
+#p4a.dist_name =
+
+# (list) p4a commandline hooks
+#p4a.hook =
+
+# (bool) allow p4a to download/use prebuilt wheels
+p4a.bootstrap = sdl2
+
+#
+# Buildozer options
+#
+
+# (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
+log_level = 2
+
+# (int) Display warning if buildozer is run as root (0 = false, 1 = true)
+warn_on_root = 1
+
+[buildozer]
+
+# (str) Path to build artifact storage, absolute or relative to spec file
+# build_dir = ./.buildozer
+
+# (str) Path to build output (APK, AAB, etc)
+# bin_dir = ./bin
