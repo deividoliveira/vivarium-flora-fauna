@@ -48,12 +48,20 @@ jobs:
 
       - name: Build APK with Buildozer
         run: |
-          # Pré-aceita todas as licenças do SDK no ambiente
+          # Prepara o diretório e pré-aceita as licenças sem quebrar o pipe
           mkdir -p ~/.android
           touch ~/.android/repositories.cfg
           
-          # Executa a compilação enviando a resposta 'y' continuamente para prompts de licença
-          yes | buildozer -v android debug
+          # Inicializa a estrutura do SDK antes do build para aceitar as licenças
+          buildozer android update || true
+          
+          # Aceita as licenças do SDK instalado pelo Buildozer
+          if [ -d "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" ]; then
+            yes | $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          fi
+
+          # Compila o projeto
+          buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
