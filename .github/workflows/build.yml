@@ -18,6 +18,15 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install dependencies
         run: |
           sudo env DEBIAN_FRONTEND=noninteractive apt-get update -y
@@ -35,7 +44,6 @@ jobs:
             libavformat-dev \
             libavcodec-dev \
             zlib1g-dev \
-            openjdk-17-jdk \
             unzip \
             ccache \
             autoconf \
@@ -48,19 +56,15 @@ jobs:
 
       - name: Build APK with Buildozer
         run: |
-          # Prepara o diretório e pré-aceita as licenças sem quebrar o pipe
+          # Aceita antecipadamente todas as licenças do SDK no ambiente local do Buildozer
           mkdir -p ~/.android
           touch ~/.android/repositories.cfg
           
-          # Inicializa a estrutura do SDK antes do build para aceitar as licenças
-          buildozer android update || true
+          # Cria as licenças aceitas para o Buildozer reutilizar
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo -e "\n89339e8354178c39123e157b764103d733013784\nd56f518547953242c18f6c296b301120982ae3ab\n24333f8a637b3702d593958b04e5e001d4314d4f" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo -e "\n84831b9402116da56f5659327e025000e396200e" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
           
-          # Aceita as licenças do SDK instalado pelo Buildozer
-          if [ -d "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" ]; then
-            yes | $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          fi
-
-          # Compila o projeto
           buildozer -v android debug
 
       - name: Upload APK Artifact
