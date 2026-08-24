@@ -49,24 +49,25 @@ jobs:
             cmake \
             ninja-build \
             zip \
-            unzip \
-            ccache
+            unzip
+
+      - name: Pre-accept Android SDK Licenses
+        run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Install Buildozer and Compatible Cython
         run: |
           pip install --upgrade pip setuptools wheel
           pip install "cython<3.0.0" buildozer
 
-      - name: Clean Previous Build Cache
-        run: |
-          rm -rf .buildozer/android/platform/build-aarch64_arm64-v8a/build
-          rm -rf .buildozer/android/platform/build-armeabi-v7a/build
-
       - name: Build APK with Buildozer
         env:
           APP_ANDROID_ACCEPT_SDK_LICENSES: '1'
+          BUILDOZER_ACCEPT_SDK_LICENSES: '1'
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
