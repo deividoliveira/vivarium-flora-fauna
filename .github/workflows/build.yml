@@ -26,7 +26,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install system dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -49,33 +49,33 @@ jobs:
             cmake \
             ninja-build \
             zip \
-            unzip
+            unzip \
+            wget
 
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer
 
-      - name: Pre-accept Android SDK Licenses for Buildozer
+      - name: Setup Command Line Tools for Buildozer
         run: |
-          # Aceita licenças no SDK padrão do sistema
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-          # Cria a estrutura de licenças necessária diretamente na pasta do Buildozer
+          # Define diretório do SDK do Buildozer
           SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
-          mkdir -p "$SDK_DIR/licenses"
+          mkdir -p "$SDK_DIR"
+          
+          # Baixa o Command Line Tools antigo exigido pelo p4a/buildozer
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools.zip
+          unzip -q commandlinetools.zip -d "$SDK_DIR"
+          rm commandlinetools.zip
 
-          # Copia as licenças aceitas do sistema para o Buildozer
-          if [ -d "$ANDROID_HOME/licenses" ]; then
-            cp -r "$ANDROID_HOME/licenses"/* "$SDK_DIR/licenses/"
-          fi
+          # Organiza a estrutura esperada (tools/bin/sdkmanager)
+          mkdir -p "$SDK_DIR/cmdline-tools/latest"
+          mv "$SDK_DIR/cmdline-tools/"* "$SDK_DIR/cmdline-tools/latest/" 2>/dev/null || true
+          mkdir -p "$SDK_DIR/tools"
+          cp -r "$SDK_DIR/cmdline-tools/latest/bin" "$SDK_DIR/tools/"
 
-          # Aceita licenças diretamente na pasta de destino do Buildozer caso exista o sdkmanager lá
-          if [ -f "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" ]; then
-            yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-          fi
+          # Aceita todas as licenças diretamente na pasta do Buildozer
+          yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" --licenses || true
 
       - name: Build APK with Buildozer
         env:
