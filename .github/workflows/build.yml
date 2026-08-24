@@ -24,8 +24,10 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Build APK with Buildozer
+      - name: Accept Android SDK Licenses & Build
         run: |
+          # Aceita automaticamente as licenças do Android SDK
+          yes | buildozer android debug || true
           buildozer -v android debug
 
       - name: Upload APK Artifact
