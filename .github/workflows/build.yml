@@ -51,31 +51,21 @@ jobs:
             zip \
             unzip
 
+      - name: Accept Android SDK Licenses globally
+        run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Pre-accept Android SDK Licenses
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          
-          # Aceita licenças globais do Android SDK do Runner
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          
-          # Cria a pasta do SDK do Buildozer antecipadamente e aceita as licenças nela
-          BUILDOZER_SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
-          mkdir -p "$BUILDOZER_SDK_DIR/licenses"
-          
-          # Copia as licenças aceitas para o diretório de trabalho do Buildozer
-          if [ -d "$ANDROID_HOME/licenses" ]; then
-            cp -r "$ANDROID_HOME/licenses"/* "$BUILDOZER_SDK_DIR/licenses/"
-          fi
-
       - name: Build APK with Buildozer
         run: |
-          buildozer -v android debug
+          # Aceita automaticamente os termos interativos do buildozer/android-sdk durante a execução
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
