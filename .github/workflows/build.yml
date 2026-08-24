@@ -51,16 +51,31 @@ jobs:
             zip \
             unzip
 
-      - name: Accept Android SDK Licenses globally
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer
+
+      - name: Pre-accept Android SDK Licenses for Buildozer
+        run: |
+          # Aceita licenças no SDK padrão do sistema
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+          # Cria a estrutura de licenças necessária diretamente na pasta do Buildozer
+          SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
+          mkdir -p "$SDK_DIR/licenses"
+
+          # Copia as licenças aceitas do sistema para o Buildozer
+          if [ -d "$ANDROID_HOME/licenses" ]; then
+            cp -r "$ANDROID_HOME/licenses"/* "$SDK_DIR/licenses/"
+          fi
+
+          # Aceita licenças diretamente na pasta de destino do Buildozer caso exista o sdkmanager lá
+          if [ -f "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" ]; then
+            yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          fi
 
       - name: Build APK with Buildozer
         env:
