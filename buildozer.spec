@@ -12,14 +12,16 @@ package.domain = org.example
 # (str) Source code where the main.py live
 source.dir = .
 
-# (list) Source files to include (let empty to include all the files)
+# (list) Source files to include
 source.include_exts = py,png,jpg,kv,atlas
 
+# (str) Application version
+version = 0.1
+
 # (list) Application requirements
-# CORRIGIDO: A palavra 'android' foi removida para evitar erro no pip
 requirements = python3, kivy
 
-# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
+# (str) Supported orientation
 orientation = portrait
 
 # (bool) Indicate if the application should be fullscreen or not
