@@ -1,36 +1,46 @@
 [app]
 
-# Titulo e dados do app
+# (str) Title of your application
 title = Vivarium Flora Fauna
-package.name = vivariumflorafauna
-package.domain = org.test
 
-# Codigo fonte
+# (str) Package name
+package.name = vivariumflorafauna
+
+# (str) Package domain (needed for android/ios packaging)
+package.domain = org.example
+
+# (str) Source code where the main.py live
 source.dir = .
+
+# (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
 
-# Versao do app
-version = 0.1
+# (list) Application requirements
+# CORRIGIDO: A palavra 'android' foi removida para evitar erro no pip
+requirements = python3, kivy
 
-# Requisitos do Python
-requirements = python3,kivy
-
-# Configuracoes de tela
+# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
+
+# (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
 
-# Configuracoes do Android
+# (list) Permissions
+android.permissions = INTERNET
+
+# (int) Target Android API
 android.api = 33
-android.minapi = 24
-android.ndk = 25b
-android.archs = arm64-v8a
-p4a.bootstrap = sdl2
 
-# Desativa alertas de root do terminal
-warn_on_root = 0
+# (int) Minimum API required
+android.minapi = 21
 
-log_level = 2
+# (list) List of architectures to build for
+android.archs = arm64-v8a, armeabi-v7a
 
 [buildozer]
-build_dir = ./.buildozer
-bin_dir = ./bin
+
+# (int) Log level (0 = error only, 1 = info, 2 = debug)
+log_level = 2
+
+# (int) Display warning if buildozer is run as root
+warn_on_root = 1
